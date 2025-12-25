@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Moon, Sun, LogIn, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { RoleBadge } from "@/components/ui/RoleBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +26,7 @@ export function Header() {
   const [isDark, setIsDark] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, role, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +54,9 @@ export function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Only show dashboard link for employees
+  const isEmployee = role === "employee";
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -64,7 +68,7 @@ export function Header() {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to={isEmployee ? "/dashboard" : "/"} className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-300">
               <span className="text-primary-foreground font-bold text-lg">S</span>
             </div>
@@ -88,11 +92,11 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            {user && (
+            {user && isEmployee && (
               <Link
                 to="/dashboard"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive("/dashboard")
+                  location.pathname.startsWith("/dashboard")
                     ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
@@ -119,15 +123,20 @@ export function Header() {
                   <Button variant="outline" size="sm" className="gap-2">
                     <User className="h-4 w-4" />
                     Account
+                    {role && <RoleBadge role={role} size="sm" />}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer">
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  {isEmployee && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard" className="cursor-pointer">
+                          Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -178,6 +187,11 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-border animate-fade-up">
             <div className="flex flex-col gap-2">
+              {user && role && (
+                <div className="px-4 py-2 mb-2">
+                  <RoleBadge role={role} />
+                </div>
+              )}
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -192,12 +206,12 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-              {user && (
+              {user && isEmployee && (
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    isActive("/dashboard")
+                    location.pathname.startsWith("/dashboard")
                       ? "text-primary bg-primary/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
