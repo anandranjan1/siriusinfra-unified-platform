@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Moon, Sun, ChevronDown } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Moon, Sun, LogIn, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -22,6 +24,8 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +44,11 @@ export function Header() {
     const newDark = !isDark;
     setIsDark(newDark);
     document.documentElement.classList.toggle("dark", newDark);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -79,6 +88,18 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            {user && (
+              <Link
+                to="/dashboard"
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  isActive("/dashboard")
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Desktop CTA */}
@@ -91,16 +112,42 @@ export function Header() {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Link to="/contact">
-              <Button variant="outline" size="sm">
-                Contact Sales
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="hero" size="sm">
-                Request Demo
-              </Button>
-            </Link>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <User className="h-4 w-4" />
+                    Account
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button variant="hero" size="sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -145,17 +192,39 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+              {user && (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                    isActive("/dashboard")
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  Dashboard
+                </Link>
+              )}
               <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
-                <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Contact Sales
+                {user ? (
+                  <Button variant="outline" onClick={handleSignOut} className="w-full">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
                   </Button>
-                </Link>
-                <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">
-                    Request Demo
-                  </Button>
-                </Link>
+                ) : (
+                  <>
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="hero" className="w-full">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
