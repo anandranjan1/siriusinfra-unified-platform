@@ -3,9 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
-import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { useAuth, AppRole } from "@/hooks/useAuth";
+import { Eye, EyeOff, ArrowRight, Loader2, Building2, User, Mail, Lock, UserCheck } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -13,11 +14,11 @@ const loginSchema = z.object({
 });
 
 const signupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
+  role: z.enum(["employee", "user"]),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -26,33 +27,42 @@ const signupSchema = z.object({
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
+    role: "user" as AppRole,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  const { user, signUp, signIn } = useAuth();
+  const { user, role, signUp, signIn } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Redirect if already logged in
+  // Redirect based on role if already logged in
   useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
+    if (user && role) {
+      if (role === "employee") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     }
-  }, [user, navigate]);
+  }, [user, role, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear error when user types
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: "" });
     }
+  };
+
+  const handleRoleChange = (selectedRole: AppRole) => {
+    setFormData({ ...formData, role: selectedRole });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,7 +110,6 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You've successfully logged in.",
           });
-          navigate("/dashboard");
         }
       } else {
         const result = signupSchema.safeParse(formData);
@@ -117,11 +126,16 @@ const Auth = () => {
           return;
         }
 
+        const nameParts = formData.fullName.trim().split(" ");
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(" ") || "";
+
         const { error } = await signUp(
           formData.email,
           formData.password,
-          formData.firstName,
-          formData.lastName
+          firstName,
+          lastName,
+          formData.role
         );
 
         if (error) {
@@ -141,9 +155,8 @@ const Auth = () => {
         } else {
           toast({
             title: "Account created!",
-            description: "Welcome to Siriusinfra. You're now logged in.",
+            description: `Welcome to Siriusinfra as ${formData.role === "employee" ? "an Employee" : "a Client"}.`,
           });
-          navigate("/dashboard");
         }
       }
     } catch (err) {
@@ -160,7 +173,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+      <div className="flex-1 flex items-center justify-center p-6 md:p-8 bg-background">
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 mb-8">
@@ -183,119 +196,166 @@ const Auth = () => {
           </p>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    First Name
-                  </label>
+              <>
+                {/* Full Name */}
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
-                    name="firstName"
-                    value={formData.firstName}
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleChange}
-                    placeholder="John"
-                    className={errors.firstName ? "border-destructive" : ""}
+                    placeholder="Full Name"
+                    className={`pl-10 h-12 ${errors.fullName ? "border-destructive" : ""}`}
                   />
-                  {errors.firstName && (
-                    <p className="text-sm text-destructive mt-1">{errors.firstName}</p>
+                  {errors.fullName && (
+                    <p className="text-sm text-destructive mt-1">{errors.fullName}</p>
                   )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Last Name
+
+                {/* Role Selection */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-foreground">
+                    Select your role
                   </label>
-                  <Input
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    className={errors.lastName ? "border-destructive" : ""}
-                  />
-                  {errors.lastName && (
-                    <p className="text-sm text-destructive mt-1">{errors.lastName}</p>
-                  )}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleRoleChange("employee")}
+                      className={`p-4 rounded-lg border-2 transition-all text-left ${
+                        formData.role === "employee"
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <Building2 className={`w-6 h-6 mb-2 ${
+                        formData.role === "employee" ? "text-primary" : "text-muted-foreground"
+                      }`} />
+                      <p className="font-semibold text-foreground">Employee</p>
+                      <p className="text-xs text-muted-foreground">Internal team member</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRoleChange("user")}
+                      className={`p-4 rounded-lg border-2 transition-all text-left ${
+                        formData.role === "user"
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <UserCheck className={`w-6 h-6 mb-2 ${
+                        formData.role === "user" ? "text-primary" : "text-muted-foreground"
+                      }`} />
+                      <p className="font-semibold text-foreground">Client</p>
+                      <p className="text-xs text-muted-foreground">Customer account</p>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Email
-              </label>
+            {/* Email */}
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="john@company.com"
-                className={errors.email ? "border-destructive" : ""}
+                placeholder="Email address"
+                className={`pl-10 h-12 ${errors.email ? "border-destructive" : ""}`}
               />
               {errors.email && (
                 <p className="text-sm text-destructive mt-1">{errors.email}</p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className={errors.password ? "border-destructive pr-10" : "pr-10"}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
+            {/* Password */}
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className={`pl-10 pr-10 h-12 ${errors.password ? "border-destructive" : ""}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
               {errors.password && (
                 <p className="text-sm text-destructive mt-1">{errors.password}</p>
               )}
             </div>
 
+            {/* Confirm Password (Sign Up only) */}
             {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Confirm Password
-                </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   name="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="••••••••"
-                  className={errors.confirmPassword ? "border-destructive" : ""}
+                  placeholder="Confirm Password"
+                  className={`pl-10 pr-10 h-12 ${errors.confirmPassword ? "border-destructive" : ""}`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
                 {errors.confirmPassword && (
                   <p className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>
                 )}
               </div>
             )}
 
+            {/* Remember Me & Forgot Password (Login only) */}
+            {isLogin && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                  />
+                  <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+                    Remember me
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  className="text-sm text-primary font-medium hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
+
             <Button
               type="submit"
               variant="hero"
-              className="w-full"
+              className="w-full h-12"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   {isLogin ? "Signing in..." : "Creating account..."}
                 </>
               ) : (
                 <>
                   {isLogin ? "Sign In" : "Create Account"}
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </Button>
@@ -332,15 +392,15 @@ const Auth = () => {
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "-3s" }} />
         
         <div className="relative text-center max-w-md">
-          <h2 className="text-4xl font-bold text-foreground mb-6">
+          <h2 className="text-4xl font-bold text-primary-foreground mb-6">
             Transform Your Business with{" "}
             <span className="text-gradient">Siriusinfra</span>
           </h2>
-          <p className="text-muted-foreground text-lg mb-8">
+          <p className="text-primary-foreground/80 text-lg mb-8">
             Access powerful CPQ, CLM, and CRM tools in one unified platform. 
             Streamline your operations and close deals faster.
           </p>
-          <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+          <div className="flex justify-center gap-6 text-sm text-primary-foreground/70">
             <span className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary" />
               500+ Enterprises

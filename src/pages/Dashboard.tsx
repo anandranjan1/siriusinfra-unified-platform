@@ -4,11 +4,12 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { RoleBadge } from "@/components/ui/RoleBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Calculator, FileText, Users, Settings, BarChart3, 
   Bell, Search, Plus, ArrowRight, TrendingUp, Clock,
-  CheckCircle2, AlertCircle, Loader2
+  CheckCircle2, AlertCircle, Loader2, LogOut
 } from "lucide-react";
 
 interface Profile {
@@ -38,15 +39,9 @@ const stats = [
 ];
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
-  }, [user, loading, navigate]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -66,6 +61,11 @@ const Dashboard = () => {
     fetchProfile();
   }, [user]);
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -78,12 +78,41 @@ const Dashboard = () => {
     return null;
   }
 
-  const firstName = profile?.first_name || user.email?.split("@")[0] || "User";
+  const firstName = profile?.first_name || user.user_metadata?.first_name || user.email?.split("@")[0] || "User";
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      <main className="pt-20">
+      {/* Custom Dashboard Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-card/95 backdrop-blur-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/dashboard" className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-lg">S</span>
+              </div>
+              <span className="text-xl font-bold text-foreground">
+                Sirius<span className="text-gradient">infra</span>
+              </span>
+            </Link>
+
+            <div className="flex items-center gap-4">
+              {role && <RoleBadge role={role} />}
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-medium text-foreground">
+                  {firstName} {profile?.last_name || user.user_metadata?.last_name || ""}
+                </p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="pt-16">
         {/* Welcome Section */}
         <section className="py-12 gradient-hero">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -218,7 +247,7 @@ const Dashboard = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-xl font-bold text-foreground mb-6">Your Modules</h2>
             <div className="grid sm:grid-cols-3 gap-6">
-              <Link to="/products#cpq" className="group p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all">
+              <Link to="/dashboard/cpq" className="group p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all">
                 <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Calculator className="w-7 h-7 text-primary-foreground" />
                 </div>
@@ -231,7 +260,7 @@ const Dashboard = () => {
                 </span>
               </Link>
 
-              <Link to="/products#clm" className="group p-6 rounded-xl bg-card border border-border hover:border-accent/30 hover:shadow-card-hover transition-all">
+              <Link to="/dashboard/clm" className="group p-6 rounded-xl bg-card border border-border hover:border-accent/30 hover:shadow-card-hover transition-all">
                 <div className="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <FileText className="w-7 h-7 text-accent-foreground" />
                 </div>
@@ -244,7 +273,7 @@ const Dashboard = () => {
                 </span>
               </Link>
 
-              <Link to="/products#crm" className="group p-6 rounded-xl bg-card border border-border hover:border-chart-3/30 hover:shadow-card-hover transition-all">
+              <Link to="/dashboard/crm" className="group p-6 rounded-xl bg-card border border-border hover:border-chart-3/30 hover:shadow-card-hover transition-all">
                 <div className="w-14 h-14 rounded-xl bg-chart-3 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Users className="w-7 h-7 text-primary-foreground" />
                 </div>
