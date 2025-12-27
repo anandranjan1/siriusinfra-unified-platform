@@ -2,12 +2,12 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { 
   Building2, Rocket, Users, ArrowRight, Check,
   Briefcase, HeartPulse, Landmark, ShoppingCart,
   Factory, Plane, GraduationCap, Tv
 } from "lucide-react";
-
 const businessSizes = [
   {
     id: "enterprise",
@@ -99,6 +99,102 @@ const industries = [
   },
 ];
 
+interface Industry {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}
+
+const IndustrySolutions = ({ industries }: { industries: Industry[] }) => {
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    
+    cardRefs.current.forEach((card, index) => {
+      if (!card) return;
+      
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                setVisibleCards((prev) => new Set(prev).add(index));
+              }, index * 100); // Staggered delay
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }
+      );
+      
+      observer.observe(card);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((obs) => obs.disconnect());
+  }, []);
+
+  return (
+    <section id="industries" ref={sectionRef} className="py-24 bg-secondary/30 overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 animate-fade-in">
+            Industry-Specific Solutions
+          </h2>
+          <p className="text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            Deep expertise across verticals with pre-built templates, workflows, and integrations.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {industries.map((industry, index) => (
+            <div
+              key={industry.title}
+              ref={(el) => (cardRefs.current[index] = el)}
+              className={`group p-6 rounded-xl bg-card border border-border transition-all duration-500 cursor-pointer
+                hover:border-primary/50 hover:shadow-glow hover:-translate-y-2 hover:scale-[1.02]
+                ${visibleCards.has(index) 
+                  ? "opacity-100 translate-y-0" 
+                  : "opacity-0 translate-y-8"
+                }`}
+              style={{ 
+                transitionDelay: visibleCards.has(index) ? "0ms" : `${index * 100}ms`,
+              }}
+            >
+              <div className="relative overflow-hidden">
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 
+                  group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                  <industry.icon className="w-7 h-7 text-primary transition-transform duration-300 group-hover:scale-110" />
+                </div>
+                
+                {/* Animated gradient background on hover */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
+              </div>
+              
+              <h3 className="text-lg font-semibold text-foreground mb-2 transition-colors duration-300 
+                group-hover:text-primary">
+                {industry.title}
+              </h3>
+              <p className="text-sm text-muted-foreground transition-colors duration-300 
+                group-hover:text-foreground/80">
+                {industry.description}
+              </p>
+              
+              {/* Animated bottom border */}
+              <div className="h-0.5 bg-gradient-to-r from-primary/0 via-primary to-primary/0 
+                mt-4 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Solutions = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -172,31 +268,7 @@ const Solutions = () => {
         </section>
 
         {/* Industry Solutions */}
-        <section id="industries" className="py-24 bg-secondary/30">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-                Industry-Specific Solutions
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Deep expertise across verticals with pre-built templates, workflows, and integrations.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {industries.map((industry) => (
-                <div
-                  key={industry.title}
-                  className="p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300"
-                >
-                  <industry.icon className="w-10 h-10 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{industry.title}</h3>
-                  <p className="text-sm text-muted-foreground">{industry.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <IndustrySolutions industries={industries} />
 
         {/* CTA */}
         <section className="py-24 gradient-hero">
