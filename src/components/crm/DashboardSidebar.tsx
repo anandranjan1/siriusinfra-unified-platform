@@ -12,6 +12,10 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  FileStack,
+  FilePlus,
+  History,
+  Send,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -46,6 +50,16 @@ const menuItems = [
     items: [
       { title: "Contracts", icon: FileSignature, path: "/dashboard/clm/contracts" },
       { title: "Templates", icon: FileText, path: "/dashboard/clm/templates" },
+    ],
+  },
+  {
+    title: "Documents",
+    items: [
+      { title: "All Documents", icon: FileStack, path: "/dashboard/documents" },
+      { title: "Create Document", icon: FilePlus, path: "/dashboard/documents/create" },
+      { title: "Templates", icon: FileText, path: "/dashboard/documents/templates" },
+      { title: "History", icon: History, path: "/dashboard/documents/history" },
+      { title: "Pending Signatures", icon: Send, path: "/dashboard/documents/pending" },
     ],
   },
 ];

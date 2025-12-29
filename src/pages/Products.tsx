@@ -6,7 +6,8 @@ import {
   Calculator, FileText, Users, ArrowRight, Check, 
   Workflow, PenTool, Shield, BarChart3, Puzzle, 
   Clock, FileCheck, AlertTriangle, RefreshCw,
-  Target, LineChart, Layers, Mail
+  Target, LineChart, Layers, Mail, FileStack,
+  Zap, History, Lock, Share2
 } from "lucide-react";
 
 const modules = [
@@ -52,6 +53,20 @@ const modules = [
     ],
     benefits: ["45% improvement in lead conversion", "25% increase in customer retention", "360° customer visibility"],
   },
+  {
+    id: "document-automation",
+    icon: FileStack,
+    name: "Document Automation",
+    title: "Intelligent Document Generation",
+    description: "Create, manage, and deliver documents at scale with zero manual effort. Automate document workflows from generation to e-signature with enterprise-grade security.",
+    features: [
+      { icon: Zap, title: "Dynamic Generation", desc: "Generate PDF & DOCX with smart templates" },
+      { icon: Workflow, title: "Conditional Logic", desc: "Variables & rules for personalized content" },
+      { icon: History, title: "Version Control", desc: "Complete audit trail & version history" },
+      { icon: Share2, title: "Secure Sharing", desc: "Encrypted storage & controlled access" },
+    ],
+    benefits: ["80% reduction in document creation time", "Zero manual data entry errors", "Complete compliance visibility"],
+  },
 ];
 
 const integrations = [
@@ -76,10 +91,10 @@ const Products = () => {
                 One Platform,{" "}
                 <span className="text-gradient">Infinite Possibilities</span>
               </h1>
-              <p className="text-lg text-muted-foreground">
-                Siriusinfra brings together CPQ, CLM, and CRM into a unified platform 
-                that transforms how you sell, contract, and manage customers.
-              </p>
+            <p className="text-lg text-muted-foreground">
+              Siriusinfra brings together CPQ, CLM, CRM, and Document Automation into a unified platform 
+              that transforms how you sell, contract, and manage customers.
+            </p>
             </div>
           </div>
         </section>
