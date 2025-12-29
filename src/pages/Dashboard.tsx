@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Calculator, FileText, Users, Settings, BarChart3, 
   Bell, Search, Plus, ArrowRight, TrendingUp, Clock,
-  CheckCircle2, AlertCircle, Loader2, LogOut
+  CheckCircle2, AlertCircle, Loader2, LogOut, FileStack
 } from "lucide-react";
 
 interface Profile {
@@ -21,6 +21,7 @@ interface Profile {
 const quickActions = [
   { icon: Calculator, title: "Create Quote", description: "Start a new CPQ quote", color: "from-primary to-primary/60" },
   { icon: FileText, title: "New Contract", description: "Draft a new contract", color: "from-accent to-accent/60" },
+  { icon: FileStack, title: "Create Document", description: "Generate a new document", color: "from-chart-4 to-chart-4/60" },
   { icon: Users, title: "Add Contact", description: "Add a new customer", color: "from-chart-3 to-chart-3/60" },
 ];
 
@@ -34,7 +35,7 @@ const recentActivity = [
 const stats = [
   { label: "Open Quotes", value: "24", change: "+12%", icon: Calculator },
   { label: "Active Contracts", value: "156", change: "+8%", icon: FileText },
-  { label: "Total Customers", value: "1,234", change: "+24%", icon: Users },
+  { label: "Documents Generated", value: "892", change: "+32%", icon: FileStack },
   { label: "Revenue MTD", value: "$124K", change: "+18%", icon: TrendingUp },
 ];
 
@@ -246,7 +247,7 @@ const Dashboard = () => {
         <section className="py-8 pb-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-xl font-bold text-foreground mb-6">Your Modules</h2>
-            <div className="grid sm:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <Link to="/dashboard/cpq" className="group p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all">
                 <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Calculator className="w-7 h-7 text-primary-foreground" />
@@ -282,6 +283,19 @@ const Dashboard = () => {
                   Manage leads, track opportunities, and build customer relationships.
                 </p>
                 <span className="text-chart-3 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                  Open Module <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+
+              <Link to="/dashboard/documents" className="group p-6 rounded-xl bg-card border border-border hover:border-chart-4/30 hover:shadow-card-hover transition-all">
+                <div className="w-14 h-14 rounded-xl bg-chart-4 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <FileStack className="w-7 h-7 text-primary-foreground" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Document Automation</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Generate documents at scale with smart templates and automation.
+                </p>
+                <span className="text-chart-4 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                   Open Module <ArrowRight className="w-4 h-4" />
                 </span>
               </Link>

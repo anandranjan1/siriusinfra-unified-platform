@@ -15,6 +15,11 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import DocumentsDashboard from "./pages/documents/DocumentsDashboard";
+import DocumentTemplatesPage from "./pages/documents/DocumentTemplatesPage";
+import DocumentHistoryPage from "./pages/documents/DocumentHistoryPage";
+import DocumentCreatePage from "./pages/documents/DocumentCreatePage";
+import PendingSignaturesPage from "./pages/documents/PendingSignaturesPage";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +70,31 @@ const App = () => (
             <Route path="/dashboard/admin" element={
               <EmployeeRoute>
                 <Dashboard />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/documents" element={
+              <EmployeeRoute>
+                <DocumentsDashboard />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/documents/create" element={
+              <EmployeeRoute>
+                <DocumentCreatePage />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/documents/templates" element={
+              <EmployeeRoute>
+                <DocumentTemplatesPage />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/documents/history" element={
+              <EmployeeRoute>
+                <DocumentHistoryPage />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/documents/pending" element={
+              <EmployeeRoute>
+                <PendingSignaturesPage />
               </EmployeeRoute>
             } />
 
