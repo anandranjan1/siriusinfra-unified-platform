@@ -13,6 +13,7 @@ import type { Lead, LeadStatus, LeadSource } from "@/types/crm";
 import { format } from "date-fns";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DashboardLayout } from "@/components/crm/DashboardLayout";
 
 export default function LeadsPage() {
   const { data: leads = [], isLoading } = useLeads();
@@ -52,29 +53,31 @@ export default function LeadsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div><h1 className="text-3xl font-bold">Leads</h1><p className="text-muted-foreground">Manage your sales leads</p></div>
-      <DataTable data={leads} columns={columns} loading={isLoading} onAdd={openCreateDialog} addLabel="Add Lead" searchPlaceholder="Search leads..." />
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>{editingLead ? "Edit Lead" : "Add Lead"}</DialogTitle></DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>First Name</Label><Input value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} /></div>
-              <div><Label>Last Name</Label><Input value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} /></div>
+    <DashboardLayout>
+      <div className="space-y-6">
+        <div><h1 className="text-3xl font-bold">Leads</h1><p className="text-muted-foreground">Manage your sales leads</p></div>
+        <DataTable data={leads} columns={columns} loading={isLoading} onAdd={openCreateDialog} addLabel="Add Lead" searchPlaceholder="Search leads..." />
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader><DialogTitle>{editingLead ? "Edit Lead" : "Add Lead"}</DialogTitle></DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>First Name</Label><Input value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} /></div>
+                <div><Label>Last Name</Label><Input value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} /></div>
+              </div>
+              <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} /></div>
+              <div><Label>Phone</Label><Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
+              <div><Label>Company</Label><Input value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Status</Label><Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v as LeadStatus })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="new">New</SelectItem><SelectItem value="contacted">Contacted</SelectItem><SelectItem value="qualified">Qualified</SelectItem><SelectItem value="unqualified">Unqualified</SelectItem></SelectContent></Select></div>
+                <div><Label>Source</Label><Select value={formData.source} onValueChange={(v) => setFormData({ ...formData, source: v as LeadSource })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="website">Website</SelectItem><SelectItem value="referral">Referral</SelectItem><SelectItem value="cold_call">Cold Call</SelectItem><SelectItem value="social_media">Social Media</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent></Select></div>
+              </div>
+              <div><Label>Description</Label><Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
             </div>
-            <div><Label>Email</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} /></div>
-            <div><Label>Phone</Label><Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} /></div>
-            <div><Label>Company</Label><Input value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Status</Label><Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v as LeadStatus })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="new">New</SelectItem><SelectItem value="contacted">Contacted</SelectItem><SelectItem value="qualified">Qualified</SelectItem><SelectItem value="unqualified">Unqualified</SelectItem></SelectContent></Select></div>
-              <div><Label>Source</Label><Select value={formData.source} onValueChange={(v) => setFormData({ ...formData, source: v as LeadSource })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="website">Website</SelectItem><SelectItem value="referral">Referral</SelectItem><SelectItem value="cold_call">Cold Call</SelectItem><SelectItem value="social_media">Social Media</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent></Select></div>
-            </div>
-            <div><Label>Description</Label><Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
-          </div>
-          <DialogFooter><Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button><Button onClick={handleSubmit} disabled={createLead.isPending || updateLead.isPending}>{editingLead ? "Update" : "Create"}</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <DialogFooter><Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button><Button onClick={handleSubmit} disabled={createLead.isPending || updateLead.isPending}>{editingLead ? "Update" : "Create"}</Button></DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </DashboardLayout>
   );
 }
