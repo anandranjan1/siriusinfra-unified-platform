@@ -55,10 +55,10 @@ export function Footer() {
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
-                <a
+              <a
                   key={social.name}
                   href={social.href}
-                  className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
+                  className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/30 transition-all"
                   aria-label={social.name}
                 >
                   <social.icon className="w-5 h-5" />
@@ -75,7 +75,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -92,7 +92,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -109,7 +109,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -126,7 +126,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -142,13 +142,13 @@ export function Footer() {
             © {new Date().getFullYear()} Siriusinfra. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link to="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link to="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Terms of Service
             </Link>
-            <Link to="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Cookie Policy
             </Link>
           </div>
