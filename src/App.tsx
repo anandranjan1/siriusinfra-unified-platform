@@ -21,6 +21,11 @@ import DocumentTemplatesPage from "./pages/documents/DocumentTemplatesPage";
 import DocumentHistoryPage from "./pages/documents/DocumentHistoryPage";
 import DocumentCreatePage from "./pages/documents/DocumentCreatePage";
 import PendingSignaturesPage from "./pages/documents/PendingSignaturesPage";
+import CPQDashboard from "./pages/cpq/CPQDashboard";
+import CLMDashboard from "./pages/clm/CLMDashboard";
+import CRMLayout from "./pages/crm/CRMLayout";
+import LeadsPage from "./pages/crm/LeadsPage";
+import PipelinePage from "./pages/crm/PipelinePage";
 
 const queryClient = new QueryClient();
 
@@ -51,17 +56,27 @@ const App = () => (
             } />
             <Route path="/dashboard/cpq" element={
               <EmployeeRoute>
-                <Dashboard />
+                <CPQDashboard />
               </EmployeeRoute>
             } />
             <Route path="/dashboard/clm" element={
               <EmployeeRoute>
-                <Dashboard />
+                <CLMDashboard />
               </EmployeeRoute>
             } />
             <Route path="/dashboard/crm" element={
               <EmployeeRoute>
-                <Dashboard />
+                <CRMLayout />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/crm/leads" element={
+              <EmployeeRoute>
+                <LeadsPage />
+              </EmployeeRoute>
+            } />
+            <Route path="/dashboard/crm/pipeline" element={
+              <EmployeeRoute>
+                <PipelinePage />
               </EmployeeRoute>
             } />
             <Route path="/dashboard/analytics" element={
