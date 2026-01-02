@@ -5,20 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth, AppRole } from "@/hooks/useAuth";
-import { Eye, EyeOff, ArrowRight, Loader2, Building2, User, Mail, Lock, UserCheck } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Eye, EyeOff, ArrowRight, Loader2, User, Mail, Lock } from "lucide-react";
 
+// SECURITY: Strong password validation - minimum 12 characters with complexity requirements
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const signupSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string()
+    .min(12, "Password must be at least 12 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
   confirmPassword: z.string(),
-  role: z.enum(["employee", "user"]),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -30,12 +35,12 @@ const Auth = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  // SECURITY: Removed role from formData - roles are now assigned server-side only
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "user" as AppRole,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -59,10 +64,6 @@ const Auth = () => {
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: "" });
     }
-  };
-
-  const handleRoleChange = (selectedRole: AppRole) => {
-    setFormData({ ...formData, role: selectedRole });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,12 +131,12 @@ const Auth = () => {
         const firstName = nameParts[0];
         const lastName = nameParts.slice(1).join(" ") || "";
 
+        // SECURITY: Role is no longer passed from client - assigned server-side
         const { error } = await signUp(
           formData.email,
           formData.password,
           firstName,
-          lastName,
-          formData.role
+          lastName
         );
 
         if (error) {
@@ -155,7 +156,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Account created!",
-            description: `Welcome to Siriusinfra as ${formData.role === "employee" ? "an Employee" : "a Client"}.`,
+            description: "Welcome to Siriusinfra! Your account has been created.",
           });
         }
       }
@@ -197,62 +198,21 @@ const Auth = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name - Signup only */}
             {!isLogin && (
-              <>
-                {/* Full Name */}
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="Full Name"
-                    className={`pl-10 h-12 ${errors.fullName ? "border-destructive" : ""}`}
-                  />
-                  {errors.fullName && (
-                    <p className="text-sm text-destructive mt-1">{errors.fullName}</p>
-                  )}
-                </div>
-
-                {/* Role Selection */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-foreground">
-                    Select your role
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleRoleChange("employee")}
-                      className={`p-4 rounded-lg border-2 transition-all text-left ${
-                        formData.role === "employee"
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <Building2 className={`w-6 h-6 mb-2 ${
-                        formData.role === "employee" ? "text-primary" : "text-muted-foreground"
-                      }`} />
-                      <p className="font-semibold text-foreground">Employee</p>
-                      <p className="text-xs text-muted-foreground">Internal team member</p>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleRoleChange("user")}
-                      className={`p-4 rounded-lg border-2 transition-all text-left ${
-                        formData.role === "user"
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <UserCheck className={`w-6 h-6 mb-2 ${
-                        formData.role === "user" ? "text-primary" : "text-muted-foreground"
-                      }`} />
-                      <p className="font-semibold text-foreground">Client</p>
-                      <p className="text-xs text-muted-foreground">Customer account</p>
-                    </button>
-                  </div>
-                </div>
-              </>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder="Full Name"
+                  className={`pl-10 h-12 ${errors.fullName ? "border-destructive" : ""}`}
+                />
+                {errors.fullName && (
+                  <p className="text-sm text-destructive mt-1">{errors.fullName}</p>
+                )}
+              </div>
             )}
 
             {/* Email */}

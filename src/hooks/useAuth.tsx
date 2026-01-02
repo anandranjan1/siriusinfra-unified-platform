@@ -9,7 +9,8 @@ interface AuthContextType {
   session: Session | null;
   role: AppRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string, role: AppRole) => Promise<{ error: Error | null }>;
+  // SECURITY: Role parameter removed - roles are assigned server-side only
+  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -66,7 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, firstName: string, lastName: string, role: AppRole) => {
+  // SECURITY: Role parameter removed - roles are assigned server-side only via database trigger
+  // This prevents privilege escalation attacks where users could set their own role
+  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -77,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data: {
           first_name: firstName,
           last_name: lastName,
-          role: role,
+          // SECURITY: Role is NOT passed from client - assigned server-side via handle_new_user_role trigger
         },
       },
     });
