@@ -1,8 +1,28 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Zap, Cloud, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import heroBg from "@/assets/hero-bg.jpg";
 import dashboardMockup from "@/assets/hero-dashboard-mockup.png";
+import cpqImage from "@/assets/cpq-capability-map.jpg";
+import clmImage from "@/assets/clm-lifecycle.jpg";
+import crmImage from "@/assets/crm-diagram.jpg";
+import automationImage from "@/assets/automation-visual.jpg";
+import esignatureImage from "@/assets/esignature-workflow.png";
+
+const serviceImages = [
+  { src: dashboardMockup, alt: "Unified dashboard showing CPQ, CLM, and CRM modules", label: "Unified Platform" },
+  { src: cpqImage, alt: "CPQ capability map showing quote configuration", label: "CPQ" },
+  { src: clmImage, alt: "CLM lifecycle management workflow", label: "CLM" },
+  { src: crmImage, alt: "CRM customer relationship diagram", label: "CRM" },
+  { src: automationImage, alt: "Document automation visual workflow", label: "Automation" },
+  { src: esignatureImage, alt: "E-Signature workflow illustration", label: "E-Signature" },
+];
 
 const highlights = [
   { icon: Shield, text: "Enterprise Security" },
@@ -82,15 +102,40 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column - Dashboard Mockup */}
+          {/* Right Column - Service Images Carousel */}
           <div className="hidden lg:block animate-fade-up" style={{ animationDelay: "0.5s" }}>
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-2xl transform translate-x-4 translate-y-4" />
-              <img
-                src={dashboardMockup}
-                alt="Siriusinfra unified dashboard showing CPQ, CLM, and CRM modules with pipeline analytics, contract status, and revenue metrics"
-                className="relative rounded-2xl shadow-2xl border border-border/50 w-full h-auto"
-              />
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 3000,
+                    stopOnInteraction: false,
+                  }),
+                ]}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {serviceImages.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <div className="relative">
+                        <img
+                          src={image.src}
+                          alt={image.alt}
+                          className="relative rounded-2xl shadow-2xl border border-border/50 w-full h-auto"
+                        />
+                        <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-border/50">
+                          <span className="text-sm font-semibold text-foreground">{image.label}</span>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
             </div>
           </div>
         </div>
