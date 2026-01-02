@@ -10,6 +10,12 @@ import {
   Zap, History, Lock, Share2
 } from "lucide-react";
 
+// Import branded capability images
+import cpqCapabilityMap from "@/assets/cpq-capability-map.jpg";
+import clmLifecycle from "@/assets/clm-lifecycle.jpg";
+import crmDiagram from "@/assets/crm-diagram.jpg";
+import automationVisual from "@/assets/automation-visual.jpg";
+
 const modules = [
   {
     id: "cpq",
@@ -17,6 +23,8 @@ const modules = [
     name: "CPQ",
     title: "Configure, Price, Quote",
     description: "Accelerate your sales cycle with intelligent product configuration, dynamic pricing engines, and automated quote generation that closes deals faster.",
+    image: cpqCapabilityMap,
+    imageAlt: "CPQ Capability Map showing guided selling, product configuration, price adjustment, workflows, quote generation and asset ordering",
     features: [
       { icon: Workflow, title: "Product Configuration", desc: "Visual product configurator with guided selling" },
       { icon: Calculator, title: "Dynamic Pricing", desc: "Rule-based pricing with discount management" },
@@ -31,6 +39,8 @@ const modules = [
     name: "CLM",
     title: "Contract Lifecycle Management",
     description: "Manage your entire contract lifecycle from creation to renewal with AI-powered templates, e-signatures, compliance tracking, and comprehensive audit trails.",
+    image: clmLifecycle,
+    imageAlt: "Contract Lifecycle Management diagram showing contract request, reviewing, approval, execution, storage, records management, search, audit, and renewal stages",
     features: [
       { icon: PenTool, title: "Contract Creation", desc: "Smart templates with clause library" },
       { icon: FileCheck, title: "E-Signatures", desc: "Legally binding electronic signatures" },
@@ -45,6 +55,8 @@ const modules = [
     name: "CRM",
     title: "Customer Relationship Management",
     description: "Build deeper customer relationships with a 360° view, intelligent pipeline management, predictive analytics, and seamless communication tools.",
+    image: crmDiagram,
+    imageAlt: "CRM diagram showing invoice, campaign, lead, opportunity, quote, purchase order, sale order, and delivery modules",
     features: [
       { icon: Target, title: "Lead Management", desc: "Capture, score, and nurture leads" },
       { icon: LineChart, title: "Pipeline Tracking", desc: "Visual pipeline with forecasting" },
@@ -59,6 +71,8 @@ const modules = [
     name: "Document Automation",
     title: "Intelligent Document Generation",
     description: "Create, manage, and deliver documents at scale with zero manual effort. Automate document workflows from generation to e-signature with enterprise-grade security.",
+    image: automationVisual,
+    imageAlt: "Document automation visual showing connected workflow icons for automated document generation and processing",
     features: [
       { icon: Zap, title: "Dynamic Generation", desc: "Generate PDF & DOCX with smart templates" },
       { icon: Workflow, title: "Conditional Logic", desc: "Variables & rules for personalized content" },
@@ -142,18 +156,29 @@ const Products = () => {
                   </Link>
                 </div>
 
-                {/* Features Grid */}
-                <div className={`grid sm:grid-cols-2 gap-4 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
-                  {module.features.map((feature) => (
-                    <div
-                      key={feature.title}
-                      className="p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300"
-                    >
-                      <feature.icon className="w-8 h-8 text-primary mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
-                      <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                    </div>
-                  ))}
+                {/* Module Image */}
+                <div className={`${index % 2 === 1 ? "lg:order-1" : ""}`}>
+                  <div className="relative rounded-2xl overflow-hidden shadow-xl border border-border/50 group">
+                    <img
+                      src={module.image}
+                      alt={module.imageAlt}
+                      className="w-full h-auto transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
+                  </div>
+                  {/* Features Grid below image */}
+                  <div className="grid sm:grid-cols-2 gap-4 mt-8">
+                    {module.features.map((feature) => (
+                      <div
+                        key={feature.title}
+                        className="p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300"
+                      >
+                        <feature.icon className="w-6 h-6 text-primary mb-2" />
+                        <h3 className="font-semibold text-foreground text-sm mb-1">{feature.title}</h3>
+                        <p className="text-xs text-muted-foreground">{feature.desc}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

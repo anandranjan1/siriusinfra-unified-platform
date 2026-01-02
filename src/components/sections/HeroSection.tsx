@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Play, Shield, Zap, Cloud, Bot } from "lucide-react";
+import { ArrowRight, Shield, Zap, Cloud, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
+import dashboardMockup from "@/assets/hero-dashboard-mockup.png";
 
 const highlights = [
   { icon: Shield, text: "Enterprise Security" },
@@ -17,7 +18,7 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0">
         <img
           src={heroBg}
-          alt="Cloud infrastructure"
+          alt="Cloud infrastructure background"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
@@ -30,52 +31,67 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-up">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">
-              Trusted by 500+ enterprises worldwide
-            </span>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Column - Text */}
+          <div className="text-center lg:text-left">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-up">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">
+                Trusted by 500+ enterprises worldwide
+              </span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+              One Unified Cloud Platform for{" "}
+              <span className="text-gradient">CPQ, CLM & CRM</span>
+            </h1>
+
+            {/* Subheading */}
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-10 animate-fade-up" style={{ animationDelay: "0.2s" }}>
+              Siriusinfra empowers your business with intelligent automation, seamless integrations, and enterprise-grade security.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+              <Link to="/contact">
+                <Button variant="hero" size="xl" className="group w-full sm:w-auto">
+                  Request Demo
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button variant="heroOutline" size="xl" className="w-full sm:w-auto">
+                  Contact Sales
+                </Button>
+              </Link>
+            </div>
+
+            {/* Highlights */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-6 animate-fade-up" style={{ animationDelay: "0.4s" }}>
+              {highlights.map((item) => (
+                <div
+                  key={item.text}
+                  className="flex items-center gap-2 text-muted-foreground"
+                >
+                  <item.icon className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-medium">{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            One Unified Cloud Platform for{" "}
-            <span className="text-gradient">CPQ, CLM & CRM</span>
-          </h1>
-
-          {/* Subheading */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up" style={{ animationDelay: "0.2s" }}>
-            Siriusinfra empowers your business with intelligent automation, seamless integrations, and enterprise-grade security. Transform how you configure, price, quote, and manage customer relationships.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-            <Link to="/contact">
-              <Button variant="hero" size="xl" className="group w-full sm:w-auto">
-                Request Demo
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="heroOutline" size="xl" className="w-full sm:w-auto">
-                Contact Sales
-              </Button>
-            </Link>
-          </div>
-
-          {/* Highlights */}
-          <div className="flex flex-wrap justify-center gap-6 animate-fade-up" style={{ animationDelay: "0.4s" }}>
-            {highlights.map((item, index) => (
-              <div
-                key={item.text}
-                className="flex items-center gap-2 text-muted-foreground"
-              >
-                <item.icon className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium">{item.text}</span>
-              </div>
-            ))}
+          {/* Right Column - Dashboard Mockup */}
+          <div className="hidden lg:block animate-fade-up" style={{ animationDelay: "0.5s" }}>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-2xl transform translate-x-4 translate-y-4" />
+              <img
+                src={dashboardMockup}
+                alt="Siriusinfra unified dashboard showing CPQ, CLM, and CRM modules with pipeline analytics, contract status, and revenue metrics"
+                className="relative rounded-2xl shadow-2xl border border-border/50 w-full h-auto"
+              />
+            </div>
           </div>
         </div>
       </div>

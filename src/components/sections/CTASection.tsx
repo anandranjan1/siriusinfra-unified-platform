@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ctaGrowthBg from "@/assets/cta-growth-bg.png";
 
 export function CTASection() {
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 gradient-hero" />
+      {/* Background Image with overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={ctaGrowthBg}
+          alt="Business growth and digital transformation visualization"
+          className="w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 gradient-hero" />
+      </div>
       
       {/* Animated orbs */}
       <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-primary/30 rounded-full blur-3xl animate-float" />

@@ -6,6 +6,7 @@ import {
   Target, Eye, Heart, Award, Users, Globe, 
   ArrowRight, Shield, Zap, Sparkles
 } from "lucide-react";
+import aboutCollaboration from "@/assets/about-collaboration.png";
 
 const values = [
   {
@@ -56,18 +57,27 @@ const About = () => {
         <section className="py-20 gradient-hero relative overflow-hidden">
           <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                About Us
-              </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mt-4 mb-6">
-                Building the Future of{" "}
-                <span className="text-gradient">Business Operations</span>
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                We're on a mission to help businesses streamline their operations, 
-                close deals faster, and build stronger customer relationships.
-              </p>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                  About Us
+                </span>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mt-4 mb-6">
+                  Building the Future of{" "}
+                  <span className="text-gradient">Business Operations</span>
+                </h1>
+                <p className="text-lg text-muted-foreground">
+                  We're on a mission to help businesses streamline their operations, 
+                  close deals faster, and build stronger customer relationships.
+                </p>
+              </div>
+              <div className="hidden lg:block">
+                <img
+                  src={aboutCollaboration}
+                  alt="Team collaboration in a modern office with connected workflows and data sharing"
+                  className="rounded-2xl shadow-xl border border-border/50"
+                />
+              </div>
             </div>
           </div>
         </section>

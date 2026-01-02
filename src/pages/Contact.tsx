@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import contactSupport from "@/assets/contact-support.png";
 
 const contactInfo = [
   {
@@ -88,18 +89,27 @@ const Contact = () => {
         <section className="py-20 gradient-hero relative overflow-hidden">
           <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                Contact Us
-              </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mt-4 mb-6">
-                Let's Start a{" "}
-                <span className="text-gradient">Conversation</span>
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                Have questions? Want a demo? Our team is here to help you transform 
-                your business with Siriusinfra.
-              </p>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                  Contact Us
+                </span>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mt-4 mb-6">
+                  Let's Start a{" "}
+                  <span className="text-gradient">Conversation</span>
+                </h1>
+                <p className="text-lg text-muted-foreground">
+                  Have questions? Want a demo? Our team is here to help you transform 
+                  your business with Siriusinfra.
+                </p>
+              </div>
+              <div className="hidden lg:block">
+                <img
+                  src={contactSupport}
+                  alt="Friendly customer support illustration with chat bubbles and help desk icons"
+                  className="rounded-2xl"
+                />
+              </div>
             </div>
           </div>
         </section>
