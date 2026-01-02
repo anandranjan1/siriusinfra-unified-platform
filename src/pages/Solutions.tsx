@@ -8,6 +8,7 @@ import {
   Briefcase, HeartPulse, Landmark, ShoppingCart,
   Factory, Plane, GraduationCap, Tv
 } from "lucide-react";
+import solutionsIndustries from "@/assets/solutions-industries.png";
 const businessSizes = [
   {
     id: "enterprise",
@@ -140,15 +141,23 @@ const IndustrySolutions = ({ industries }: { industries: Industry[] }) => {
   return (
     <section id="industries" ref={sectionRef} className="py-24 bg-secondary/30 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 animate-fade-in">
-            Industry-Specific Solutions
-          </h2>
-          <p className="text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            Deep expertise across verticals with pre-built templates, workflows, and integrations.
-          </p>
+        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+          <div className="text-center lg:text-left">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 animate-fade-in">
+              Industry-Specific Solutions
+            </h2>
+            <p className="text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              Deep expertise across verticals with pre-built templates, workflows, and integrations.
+            </p>
+          </div>
+          <div className="hidden lg:block">
+            <img
+              src={solutionsIndustries}
+              alt="Connected industry solutions showing healthcare, finance, manufacturing, retail and more"
+              className="rounded-2xl"
+            />
+          </div>
         </div>
-
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {industries.map((industry, index) => (
             <div
@@ -169,8 +178,6 @@ const IndustrySolutions = ({ industries }: { industries: Industry[] }) => {
                   group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                   <industry.icon className="w-7 h-7 text-primary transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                
-                {/* Animated gradient background on hover */}
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 
                   opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
               </div>
@@ -184,7 +191,6 @@ const IndustrySolutions = ({ industries }: { industries: Industry[] }) => {
                 {industry.description}
               </p>
               
-              {/* Animated bottom border */}
               <div className="h-0.5 bg-gradient-to-r from-primary/0 via-primary to-primary/0 
                 mt-4 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
             </div>
